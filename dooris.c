@@ -68,7 +68,7 @@ int old_user_count     = 0;
 int not_real_users     = 1;
 
 // The delay for polling the dooris service. Adjust this before compiling
-int delay              = (60 * 2) * 1000; // 2 minutes
+int delay              = 120000; // ms. aka 2 minutes
 
 bool door_open         = FALSE;
 bool old_door_open     = FALSE;
@@ -642,7 +642,7 @@ static const GdkPixdata icon_yellow_pixbuf = {
   "\0\0\0",
 };
 
-boolean do_it(boolean);
+bool do_it(bool);
 
 void invoke_notification();
 
@@ -671,7 +671,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
 }
 
 void tray_icon_on_click(GtkStatusIcon *status_icon, gpointer user_data) {
-  boolean foo = do_it(false);
+  bool foo = do_it(false);
   invoke_notification(user_count);
 }
 
@@ -701,9 +701,10 @@ void get_bouncer_data() {
   old_door_open  = door_open;
 
   curl = curl_easy_init();
+  
+  init_string(&s);
+  
   if(curl) {
-    init_string(&s);
-    
     curl_easy_setopt(curl, CURLOPT_URL, statusurl);
     curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
@@ -835,7 +836,7 @@ void set_status() {
   }
 }
 
-boolean do_it(boolean force) {  
+bool do_it(bool force) {  
 
   printf("Called do_it with: %d users\n", user_count);
   
