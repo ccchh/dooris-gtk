@@ -854,7 +854,7 @@ bool do_it(bool force) {
       force == true)
       
   {
-    invoke_notification(user_count);
+    invoke_notification();
   }
   return true;
 }
