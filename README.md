@@ -16,15 +16,15 @@ Requirements:
 
 Download the file to some directory. cd to it and run the following command:
 
-# gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json` -o dooris dooris.c
+$ gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json` -o dooris dooris.c
 
 To compile with libnotify support use the following command:
 
-# gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json --libs libnotify` -DLIBNOTIFY -o dooris dooris.c
+$ gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json --libs libnotify` -DLIBNOTIFY -o dooris dooris.c
 
 There is a Makefile included so you maybe just want to run:
 
-# make
+$ make
 
 The Makefile uses libnotify. If you don't need/want libnotify support compile dooris like described above.
 
@@ -38,7 +38,7 @@ Usage:
 
 Run dooris with:
 
-# ./dooris & 
+$ ./dooris & 
 
 Status Icon "Pesthörnchen" colors:
 
