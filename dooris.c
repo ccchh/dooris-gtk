@@ -40,8 +40,8 @@ int not_real_users     = 1;
 // The delay for polling the dooris service. Adjust this before compiling
 int delay              = 120000; // ms. aka 2 minutes
 
-bool door_open         = FALSE;
-bool old_door_open     = FALSE;
+bool door_open         = false;
+bool old_door_open     = false;
 
 GtkStatusIcon *tray_icon;
 
@@ -265,7 +265,7 @@ int main(int argc, char **argv) {
   g_signal_connect(G_OBJECT(tray_icon), "activate", 
                    G_CALLBACK(tray_icon_on_click), NULL);
 
-  gtk_status_icon_set_visible(tray_icon, TRUE);
+  gtk_status_icon_set_visible(tray_icon, true);
   
   do_it(true);
   
