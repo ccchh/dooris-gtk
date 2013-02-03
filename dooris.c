@@ -675,7 +675,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
 }
 
 void tray_icon_on_click(GtkStatusIcon *status_icon, gpointer user_data) {
-  bool foo = do_it(false);
+  do_it(false);
   invoke_notification(user_count);
 }
 
@@ -860,8 +860,6 @@ bool do_it(bool force) {
 }
 
 int main(int argc, char **argv) {
-  gint g_timeout;
-
   gtk_init(&argc, &argv);
 
   tray_icon = gtk_status_icon_new();
@@ -872,7 +870,7 @@ int main(int argc, char **argv) {
   
   do_it(true);
   
-  g_timeout = gtk_timeout_add(delay, (GtkFunction)do_it, (gpointer)tray_icon);
+  gtk_timeout_add(delay, (GtkFunction)do_it, (gpointer)tray_icon);
 
   gtk_main();
   
