@@ -14,7 +14,11 @@ Requirements:
 - json-c
 - libnotify - Only needed when compiling with libnotify support.
 
-Download the file to some directory. cd to it and run the following command:
+Use the following commands for installation:
+
+    git clone https://github.com/ccchh/dooris-gtk.git
+    
+    cd dooris-gtk
 
     gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json` -o dooris dooris.c
 
