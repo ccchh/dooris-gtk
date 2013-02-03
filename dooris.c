@@ -9,36 +9,6 @@
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 2 of the License, or
  * (at your option) any later version.
- *
- * INSTALLATION:
- * -------------
- *
- * Requirements:
- * - Standard tools like gcc, pkg-config etc.
- * - curl
- * - gtk+
- * - json-c
- * - libnotify - Only needed when compiling with libnotify support.
- *
- * Download the file to some directory. cd to it and run the following command:
- *
- * gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json` -o dooris dooris.c
- *
- * To compile with libnotify support use the following command:
- *
- * gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json --libs libnotify` -DLIBNOTIFY -o dooris dooris.c
- *
- * USAGE:
- * ------
- *
- * Run the bouncer with ./bouncer & 
- *
- * Staus Icon "Pesthörnchen" colors:
- *
- * - Black  = Hackers inside; Door closed
- * - Yellow = Hackers inside; Door open
- * - Red    = No Hackers inside; Door closed
- * - Orange = No Hackers inside; Door open!!!
  */
 
 #include <stdlib.h>
@@ -60,7 +30,7 @@ struct string {
 
 static char *name      = "Dooris for UNIX";
 static char *statusurl = "http://www.hamburg.ccc.de/dooris/json.php";
-static char *agent     = "DoorIS-for-UNIX/0.1";
+static char *agent     = "Dooris-for-UNIX/0.1";
 
 int user_count         = 0;
 int old_user_count     = 0;
