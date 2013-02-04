@@ -84,6 +84,7 @@ void get_bouncer_data() {
   struct json_object *response_json_object;
   struct json_object *door_json_object;
   struct json_object *dhcp_json_object;
+  struct json_object *leaf_json_object;
   
   int door_status;
   int door_last_change;
@@ -129,39 +130,34 @@ void get_bouncer_data() {
   // door objects
   door_json_object = json_object_object_get(response_json_object, "door");
 
-  door_json_object = json_object_object_get(door_json_object, "status");
-  door_status = json_object_get_int(door_json_object);
-
-  door_json_object = json_object_object_get(response_json_object, "door");
+  leaf_json_object = json_object_object_get(door_json_object, "status");
+  door_status = json_object_get_int(leaf_json_object);
   
-  door_json_object = json_object_object_get(door_json_object, "last_change");
-  door_last_change = json_object_get_int(door_json_object);
+  leaf_json_object = json_object_object_get(door_json_object, "last_change");
+  door_last_change = json_object_get_int(leaf_json_object);
 
-  door_json_object = json_object_object_get(response_json_object, "door");
-
-  door_json_object = json_object_object_get(door_json_object, "last_update");
-  door_last_update = json_object_get_int(door_json_object);
+  leaf_json_object = json_object_object_get(door_json_object, "last_update");
+  door_last_update = json_object_get_int(leaf_json_object);
   // free door object
   json_object_put(door_json_object);
 
   // dhcp objects
   dhcp_json_object = json_object_object_get(response_json_object, "router");
   
-  dhcp_json_object = json_object_object_get(dhcp_json_object, "dhcp");
-  dhcp_status = json_object_get_int(dhcp_json_object);
+  leaf_json_object = json_object_object_get(dhcp_json_object, "dhcp");
+  dhcp_status = json_object_get_int(leaf_json_object);
   
-  dhcp_json_object = json_object_object_get(response_json_object, "router");
-  
-  dhcp_json_object = json_object_object_get(dhcp_json_object, "last_change");
-  dhcp_last_change = json_object_get_int(dhcp_json_object);
-  
-  dhcp_json_object = json_object_object_get(response_json_object, "router");
-  
-  dhcp_json_object = json_object_object_get(dhcp_json_object, "last_update");
-  dhcp_last_update = json_object_get_int(dhcp_json_object);
+  leaf_json_object = json_object_object_get(dhcp_json_object, "last_change");
+  dhcp_last_change = json_object_get_int(leaf_json_object);
+
+  leaf_json_object = json_object_object_get(dhcp_json_object, "last_update");
+  dhcp_last_update = json_object_get_int(leaf_json_object);
   // free dhcp object
   json_object_put(dhcp_json_object);
 
+  // free leaf object
+  json_object_put(leaf_json_object);
+  
   // free response object
   json_object_put(response_json_object);
   
