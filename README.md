@@ -39,7 +39,7 @@ The Makefile uses libnotify. If you don't need/want libnotify support compile do
 Configuration:
 --------------
 
-Configuration needs to be done before compiling. There are some parameters you can set in the head of this file where variables are declared. A configuration file will at this point make no sense.
+Configuration needs to be done before compiling. There are some parameters you can set in the head of the dooris.c file where variables are declared. A configuration file will at this point make no sense.
 
 Usage:
 ------
