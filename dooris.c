@@ -95,8 +95,6 @@ void get_bouncer_data() {
   int dhcp_last_update;
 
   struct string s;
-  
-  MC_SET_DEBUG(1);
 
   printf("Called get_bouncer_data()\n");
 
@@ -126,7 +124,6 @@ void get_bouncer_data() {
             curl_easy_strerror(res));
     return;
   }
-
 
   response_json_object = json_tokener_parse(s.ptr);
   free(s.ptr);
