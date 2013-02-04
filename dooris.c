@@ -75,7 +75,6 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
 
 void tray_icon_on_click(GtkStatusIcon *status_icon, gpointer user_data) {
   do_it(false);
-  invoke_notification();
 }
 
 void get_bouncer_data() {
