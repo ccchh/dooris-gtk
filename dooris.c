@@ -121,6 +121,7 @@ void get_bouncer_data() {
 
     curl_easy_cleanup(curl);
   }
+  if(res != CURLE_OK) return;
 
   response_json_object = json_tokener_parse(s.ptr);
   free(s.ptr);
