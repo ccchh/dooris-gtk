@@ -103,26 +103,30 @@ void get_bouncer_data() {
   old_user_count = user_count;
   old_door_open  = door_open;
 
-  curl = curl_easy_init();
-  
   init_string(&s);
   
-  if(curl) {
-    curl_easy_setopt(curl, CURLOPT_URL, statusurl);
-    curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
-    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
-    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
-    curl_easy_setopt(curl, CURLOPT_USERAGENT, agent);
-
-    res = curl_easy_perform(curl);
-
-    if(res != CURLE_OK)
-      fprintf(stderr, "curl_easy_perform() failed: %s\n",
-              curl_easy_strerror(res));
-
-    curl_easy_cleanup(curl);
+  curl = curl_easy_init();
+  if(!curl) {
+    fprintf(stderr, "curl_easy_init() failed.\n");
+    return;
   }
-  if(res != CURLE_OK) return;
+
+  curl_easy_setopt(curl, CURLOPT_URL, statusurl);
+  curl_easy_setopt(curl, CURLOPT_FOLLOWLOCATION, 1L);
+  curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, writefunc);
+  curl_easy_setopt(curl, CURLOPT_WRITEDATA, &s);
+  curl_easy_setopt(curl, CURLOPT_USERAGENT, agent);
+
+  res = curl_easy_perform(curl);
+
+  curl_easy_cleanup(curl);
+
+  if(res != CURLE_OK) {
+    fprintf(stderr, "curl_easy_perform() failed: %s\n",
+            curl_easy_strerror(res));
+    return;
+  }
+
 
   response_json_object = json_tokener_parse(s.ptr);
   free(s.ptr);
