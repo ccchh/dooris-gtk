@@ -255,6 +255,15 @@ bool do_it(bool force) {
   return true;
 }
 
+bool do_it_callback() {
+
+  printf("Called do_it_callback with: %d users\n", user_count);
+  
+  do_it(false);
+  
+  return true;
+}
+
 int main(int argc, char **argv) {
   gtk_init(&argc, &argv);
 
@@ -266,7 +275,7 @@ int main(int argc, char **argv) {
   
   do_it(true);
   
-  gtk_timeout_add(delay, (GtkFunction)do_it, (gpointer)tray_icon);
+  gtk_timeout_add(delay, (GtkFunction)do_it_callback, (gpointer)NULL);
 
   gtk_main();
   
