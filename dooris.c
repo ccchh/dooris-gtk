@@ -170,9 +170,9 @@ void get_bouncer_data() {
   printf("DHCP last change: = %d\n", dhcp_last_change);
   printf("DHCP last update: = %d\n", dhcp_last_update);
 
-  if (door_status == 0) {
+  if (door_status == 1) {
     door_open = false;
-  } else if (door_status > 0) {
+  } else if (door_status == 0) {
     door_open = true;
   }
   user_count = dhcp_status - not_real_users;
