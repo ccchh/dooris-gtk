@@ -7,6 +7,9 @@
  * As long as you retain this notice you can do whatever you want with this 
  * stuff. If we meet some day, and you think this stuff is worth it, you can buy 
  * me a beer in return hanez and all other contributers
+ * 
+ * TODO:
+ *  - Add door open/close date to notification and status
  */
 
 #include <stdlib.h>
@@ -29,24 +32,18 @@ struct string {
 };
 
 static char *name      = "Dooris for UNIX";
-static char *statusurl = "http://www.hamburg.ccc.de/dooris/json.php";
-static char *agent     = "Dooris-for-UNIX/0.1";
-
-int user_count         = 0;
-int old_user_count     = 0;
-// Count of no real users like the router etc. Adjust this before compiling
-int not_real_users     = 1;
+static char *statusurl = "https://www.hamburg.ccc.de/dooris/status.json";
+static char *agent     = "Dooris-for-UNIX/0.42";
 
 // The delay for polling the dooris service. Adjust this before compiling
-int delay              = 120000; // ms. aka 2 minutes
+int delay              = 900000; // ms. aka 15 minutes
 
 bool door_open         = false;
 bool old_door_open     = false;
 
 GtkStatusIcon *tray_icon;
 
-bool do_it(bool);
-
+bool do_it();
 void invoke_notification();
 
 void init_string(struct string *s) {
@@ -74,7 +71,7 @@ size_t writefunc(void *ptr, size_t size, size_t nmemb, struct string *s) {
 }
 
 void tray_icon_on_click(GtkStatusIcon *status_icon, gpointer user_data) {
-  do_it(false);
+  do_it();
 }
 
 void get_bouncer_data() {
@@ -83,22 +80,15 @@ void get_bouncer_data() {
   
   struct json_object *response_json_object;
   struct json_object *door_json_object;
-  struct json_object *dhcp_json_object;
   struct json_object *leaf_json_object;
   
-  int door_status;
+  bool door_status;
   int door_last_change;
-  int door_last_update;
-
-  int dhcp_status;
-  int dhcp_last_change;
-  int dhcp_last_update;
 
   struct string s;
 
   printf("Called get_bouncer_data()\n");
 
-  old_user_count = user_count;
   old_door_open  = door_open;
 
   init_string(&s);
@@ -129,138 +119,90 @@ void get_bouncer_data() {
   free(s.ptr);
 
   // door objects
-  door_json_object = json_object_object_get(response_json_object, "door");
+  door_json_object = json_object_object_get(response_json_object, "state");
 
-  leaf_json_object = json_object_object_get(door_json_object, "status");
+  leaf_json_object = json_object_object_get(door_json_object, "open");
   door_status = json_object_get_int(leaf_json_object);
-  
-  leaf_json_object = json_object_object_get(door_json_object, "last_change");
+  //door_status = true;
+  leaf_json_object = json_object_object_get(door_json_object, "lastchange");
   door_last_change = json_object_get_int(leaf_json_object);
 
-  leaf_json_object = json_object_object_get(door_json_object, "last_update");
-  door_last_update = json_object_get_int(leaf_json_object);
   // free door object
   json_object_put(door_json_object);
 
-  // dhcp objects
-  dhcp_json_object = json_object_object_get(response_json_object, "router");
-  
-  leaf_json_object = json_object_object_get(dhcp_json_object, "dhcp");
-  dhcp_status = json_object_get_int(leaf_json_object);
-  
-  leaf_json_object = json_object_object_get(dhcp_json_object, "last_change");
-  dhcp_last_change = json_object_get_int(leaf_json_object);
-
-  leaf_json_object = json_object_object_get(dhcp_json_object, "last_update");
-  dhcp_last_update = json_object_get_int(leaf_json_object);
-  // free dhcp object
-  json_object_put(dhcp_json_object);
-
   // free leaf object
-  json_object_put(leaf_json_object);
+  //json_object_put(leaf_json_object);
   
   // free response object
-  json_object_put(response_json_object);
+ // json_object_put(response_json_object);
   
   printf("Door status: = %d\n", door_status);
   printf("Door last change: = %d\n", door_last_change);
-  printf("Door last update: = %d\n", door_last_update);
 
-  printf("DHCP status: = %d\n", dhcp_status - not_real_users);
-  printf("DHCP last change: = %d\n", dhcp_last_change);
-  printf("DHCP last update: = %d\n", dhcp_last_update);
-
-  if (door_status == 1) {
-    door_open = false;
-  } else if (door_status == 0) {
+  if (door_status == true) {
     door_open = true;
+  } else {
+    door_open = false;
   }
-  user_count = dhcp_status - not_real_users;
 }
 
 void invoke_notification() {
-  char x[100];
-  char door[100];
+  char door[20];
   
   if (door_open == true) {
-    snprintf(door, 100, "Door open.");
+    snprintf(door, 20, "Door open...");
   } else {
-    snprintf(door, 100, "Door closed.");
+    snprintf(door, 20, "Door closed...");
   }
   
-  printf("Notification invoked with: %d users\n", user_count);
-  
-  snprintf(x, 100, "%d DHCP Lease(s).\n%s", user_count, door);
-
-  gtk_status_icon_set_tooltip(tray_icon, x);
+  gtk_status_icon_set_tooltip(tray_icon, door);
 
 #if LIBNOTIFY
   NotifyNotification *n;
 
   notify_init(name);
-  n = notify_notification_new(name, x, NULL);
+  n = notify_notification_new(name, door, NULL);
   //notify_notification_set_timeout(n, 10000);
+
+  if (door_open == true) {
   notify_notification_set_icon_from_pixbuf(n, gdk_pixbuf_from_pixdata(
-                                              &icon_black_pixbuf, 
+                                              &icon_yellow_pixbuf, 
                                               true, 
                                               NULL));
+  } else {
+  notify_notification_set_icon_from_pixbuf(n, gdk_pixbuf_from_pixdata(
+                                              &icon_red_pixbuf, 
+                                              true, 
+                                              NULL));
+  }
   notify_notification_show(n, NULL);
   g_object_unref(G_OBJECT(n));
 #endif
 }
 
 void set_status() {
-
-  printf("Called set_status with: %d users\n", user_count);
-
-  if (user_count < 1 && door_open == true) {
-    gtk_status_icon_set_from_pixbuf(tray_icon, 
-                                    gdk_pixbuf_from_pixdata(&icon_orange_pixbuf, 
-                                    true, 
-                                    NULL));
-  } else if (user_count < 1 && door_open == false) {
-    gtk_status_icon_set_from_pixbuf(tray_icon, 
-                                    gdk_pixbuf_from_pixdata(&icon_red_pixbuf, 
-                                    true, 
-                                    NULL));
-  } else if (user_count > 0 && door_open == true) {
+  if (door_open == true) {
+    printf("Set to status: open\n");
     gtk_status_icon_set_from_pixbuf(tray_icon, 
                                     gdk_pixbuf_from_pixdata(&icon_yellow_pixbuf, 
                                     true, 
                                     NULL));
-  } else if (user_count > 0 && door_open == false) {
+  } else {
+    printf("Set to status: closed\n");
     gtk_status_icon_set_from_pixbuf(tray_icon, 
-                                    gdk_pixbuf_from_pixdata(&icon_black_pixbuf, 
+                                    gdk_pixbuf_from_pixdata(&icon_red_pixbuf, 
                                     true, 
                                     NULL));
-  }
+  } 
 }
 
-bool do_it(bool force) {  
-
-  printf("Called do_it with: %d users\n", user_count);
-  
+bool do_it() {  
   get_bouncer_data();
-
   set_status();
 
-  if (user_count > old_user_count || 
-      user_count < old_user_count || 
-      door_open != old_door_open ||
-      force == true)
-      
-  {
+  if (door_open != old_door_open) {
     invoke_notification();
   }
-  return true;
-}
-
-bool do_it_callback() {
-
-  printf("Called do_it_callback with: %d users\n", user_count);
-  
-  do_it(false);
-  
   return true;
 }
 
@@ -273,9 +215,16 @@ int main(int argc, char **argv) {
 
   gtk_status_icon_set_visible(tray_icon, true);
   
-  do_it(true);
-  
-  gtk_timeout_add(delay, (GtkFunction)do_it_callback, (gpointer)NULL);
+  do_it();
+ 
+  // DEBUG STUFF 
+  door_open = true;
+  set_status();
+  // END DEBUG STUFF
+
+  invoke_notification();
+
+  gtk_timeout_add(delay, (GtkFunction)do_it, (gpointer)NULL);
 
   gtk_main();
   

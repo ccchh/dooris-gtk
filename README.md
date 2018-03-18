@@ -1,7 +1,7 @@
 dooris-gtk
 ==========
 
-Menubar item for GTK showing the Dooris status
+Menubar item for GTK2 showing the Dooris status compatible with the SpaceAPI version 0.13.
 
 Installation:
 -------------
@@ -10,7 +10,7 @@ Requirements:
 
 - Standard tools like gcc, pkg-config etc.
 - curl
-- gtk+
+- gtk+-2.0
 - json-c
 - libnotify - Only needed when compiling with libnotify support.
 
@@ -50,7 +50,6 @@ Run dooris with:
 
 Status Icon "Pesthörnchen" colors:
 
-- Black  = Hackers inside; Door closed
-- Yellow = Hackers inside; Door open
-- Red    = No Hackers inside; Door closed
-- Orange = No Hackers inside; Door open!!!
+- Red = Door closed
+- Yellow = Door open
+
