@@ -22,7 +22,7 @@ Change into the new directory:
 
     cd dooris-gtk
 
-Then compile the sources just run:
+To compile the sources just run:
 
     make
 
@@ -31,6 +31,17 @@ This will compile dooris with libnotify support.
 If you don't want notifications run the following comand:
 
     gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json-c` -o dooris dooris.c
+
+Installation
+------------
+
+Just copy "dooris" to a folder in your $PATH. I do:
+
+    cp ./dooris ~/bin/
+
+You can copy the file to /usr/bin to make it available for all users but I don't. If you want that just run:
+
+    sudo cp ./dooris /usr/bin/
 
 Configuration:
 --------------
