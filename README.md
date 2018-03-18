@@ -22,19 +22,15 @@ Change into the new directory:
 
     cd dooris-gtk
 
-Then compile the sources (take a look below before! A Make based compilation is possible too!):
-
-    gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json` -o dooris dooris.c
-
-To compile with libnotify support use the following command:
-
-    gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json --libs libnotify` -DLIBNOTIFY -o dooris dooris.c
-
-There is a Makefile included so you maybe just want to run:
+Then compile the sources just run:
 
     make
 
-The Makefile uses libnotify. If you don't need/want libnotify support compile dooris like described above.
+This will compile dooris with libnotify support.
+
+If you don't want notifications run the following comand:
+
+    gcc `pkg-config --cflags --libs gtk+-2.0 --libs libcurl --libs json-c` -o dooris dooris.c
 
 Configuration:
 --------------
