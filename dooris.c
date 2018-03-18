@@ -218,8 +218,8 @@ int main(int argc, char **argv) {
   do_it();
  
   // DEBUG STUFF 
-  door_open = true;
-  set_status();
+  //door_open = true;
+  //set_status();
   // END DEBUG STUFF
 
   invoke_notification();
